@@ -97,9 +97,9 @@ function validateEmail() {
 
 
 function validateName() {
-  var nameCorrector = /^$|\s+/;
+  var nameCorrector = /\S+/;
   if ((input.value.match(nameCorrector))) {
-    return false;
+    return true;
   }
 }
 
@@ -108,10 +108,13 @@ let email = document.querySelector("#inputs")
 let clientName = document.querySelector("#input")
 let textarea = document.querySelector("#text")
 let saveButton = document.querySelector("#button")
+let loader = document.getElementById("loader");
 import { auth, db, app } from "./firebaseconfig.js";
 import { collection, addDoc, Timestamp, getDocs } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
 saveButton.addEventListener("click", async () => {
+  saveButton.style.display = "none"
+  loader.style.display = "block"
 
     let todosCollection = collection(db, "ClientResponse");
     await addDoc(todosCollection, { Name: clientName.value, email: email.value, info: textarea.value, time: Timestamp.fromDate(new Date()) });
@@ -122,22 +125,17 @@ saveButton.addEventListener("click", async () => {
       icon: "warning",
       buttons: true,
       dangerMode: true,
+
     })
+    saveButton.style.display = "block"
+    loader.style.display = "none"
   } else {
     swal("Thank you for getting in touch!", "", "success");
     input.value = "";
     inputs.value = "";
     text.value = "";
+    saveButton.style.display = "block"
+    loader.style.display = "none"
   }
-  // console.log(auth.currentUser.uid);
-  // getDocs(todosCollection)
-  // .then((items)=>{
-  //     let snap = [];
-  //     items.docs.forEach(doc => {
-  //         snap.push({...doc.data() , id: doc.id})
-  //     });
-  //     console.log(snap.map((item)=> item.info));
-  // })
-
 
 });
